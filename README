@@ -1,1 +1,152 @@
+# 🤖 ResumeAI — Resume Analyzer + Interview Simulator
+
+A full-stack AI-powered web app that analyzes your resume and simulates job interviews with instant feedback. Built with **Python Flask** + **Three.js** + **glassmorphism UI**.
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue) ![Flask](https://img.shields.io/badge/Flask-3.0-green) ![Three.js](https://img.shields.io/badge/Three.js-r128-orange)
+
+---
+
+## ✨ Features
+
+### 📄 Resume Analyzer
+- Upload your PDF resume (or try the demo mode)
+- AI extracts skills across 5 categories: Programming, Web, Data/AI, Cloud/DevOps, Soft Skills
+- Match score against 6 job roles (Software Engineer, Data Scientist, DevOps, etc.)
+- Animated score ring with visual feedback
+- Personalized improvement suggestions
+
+### 🎤 Interview Simulator
+- Generates personalized questions based on your resume skills
+- Behavioral, Technical, and Role-Specific questions
+- 2-minute countdown timer per question
+- AI evaluates your answer and gives:
+  - Score (0–100) + letter grade
+  - Specific strengths
+  - Concrete improvement tips
+- Final performance dashboard with score breakdown
+
+### 🎨 UI/UX
+- Glassmorphism card design
+- Three.js 3D animated background (particles + floating wireframe geometry)
+- Mouse parallax effect on 3D scene
+- Smooth CSS animations and transitions
+- Fully responsive (mobile + desktop)
+- Animated score counters and progress rings
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python Flask |
+| Resume Parsing | PyPDF2 |
+| NLP / Scoring | Custom keyword extraction |
+| 3D Animation | Three.js (r128) |
+| UI Design | Glassmorphism CSS |
+| Typography | Syne + Space Grotesk (Google Fonts) |
+| Deployment | Gunicorn + Render/Railway compatible |
+
+---
+
+## 🚀 Setup & Run
+
+### Prerequisites
+- Python 3.8+
+- pip
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/resume-ai-app.git
+cd resume-ai-app
+```
+
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the app
+```bash
+python app.py
+```
+
+### 4. Open in browser
+```
+http://localhost:5000
+```
+
+---
+
+## 📁 Project Structure
+
+```
+resume-ai-app/
+├── app.py                  # Flask backend + all API routes
+├── requirements.txt        # Python dependencies
+├── Procfile                # Render/Railway deployment config
+├── README.md               # This file
+├── templates/
+│   └── index.html          # Main HTML template (glassmorphism UI)
+├── static/
+│   ├── css/
+│   │   └── style.css       # Full CSS (variables, glassmorphism, animations)
+│   ├── js/
+│   │   ├── app.js          # Frontend logic (upload, interview, scoring)
+│   │   └── background3d.js # Three.js 3D scene
+│   └── 3d/                 # (reserved for additional 3D assets)
+└── uploads/                # Temporary PDF storage (auto-cleaned)
+```
+
+---
+
+## 🌐 Deploy to Render (Free)
+
+1. Push your code to GitHub
+2. Go to [render.com](https://render.com) → New → Web Service
+3. Connect your GitHub repo
+4. Set these values:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app:app`
+   - **Environment:** Python 3
+5. Click **Create Web Service** — done! ✅
+
+### Environment Variables (optional)
+| Variable | Default | Description |
+|---|---|---|
+| `SECRET_KEY` | `resume-ai-secret-key-2024` | Flask session secret |
+| `PORT` | `5000` | Server port |
+| `FLASK_ENV` | `development` | Set to `production` on deploy |
+
+---
+
+## 🎯 API Endpoints
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/` | Main application page |
+| `POST` | `/analyze` | Upload + analyze PDF resume |
+| `POST` | `/demo-analyze` | Analyze with demo data |
+| `POST` | `/interview/start` | Start interview session |
+| `POST` | `/interview/answer` | Submit answer + get feedback |
+| `GET` | `/interview/results` | Get final interview results |
+
+---
+
+## 💡 Tips for Best Results
+
+- **Resume PDF**: Ensure your PDF is text-based (not a scanned image)
+- **Skills**: List skills clearly in a dedicated section for better detection
+- **Interview answers**: Aim for 80–150 words using the STAR method (Situation, Task, Action, Result)
+- Use `Ctrl+Enter` to quickly submit interview answers
+
+---
+
+## 📝 License
+
+MIT License — feel free to use, modify, and deploy.
+
+---
+
+Made with ❤️ using Flask + Three.js
 
