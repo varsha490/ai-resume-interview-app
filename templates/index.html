@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResumeAI — Resume Analyzer & Interview Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- 3D Animated Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Orbs / decorative blobs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ───── NAVIGATION ───── -->
+  <nav class="navbar glass">
+    <div class="nav-brand">
+      <span class="brand-icon">◈</span>
+      <span class="brand-text">Resume<span class="accent">AI</span></span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="analyzer">Resume Analyzer</button>
+      <button class="nav-tab" data-tab="interview">Interview Simulator</button>
+    </div>
+    <div class="nav-badge">
+      <span class="pulse-dot"></span> AI Powered
+    </div>
+  </nav>
+
+  <!-- ───── MAIN CONTENT ───── -->
+  <main class="main-container">
+
+    <!-- ═══════ ANALYZER PANEL ═══════ -->
+    <section id="panel-analyzer" class="panel active">
+
+      <!-- Hero -->
+      <div class="hero-section">
+        <div class="hero-tag">✦ AI-Powered Analysis</div>
+        <h1 class="hero-title">Decode Your Resume<br /><span class="gradient-text">Stand Out. Get Hired.</span></h1>
+        <p class="hero-subtitle">Upload your PDF resume and let our AI evaluate your skills, match you to your target role, and generate personalized improvement tips.</p>
+      </div>
+
+      <!-- Upload Card -->
+      <div class="card glass upload-card" id="upload-section">
+        <div class="card-header">
+          <h2>Upload Resume</h2>
+          <div class="step-badge">Step 1</div>
+        </div>
+
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="resume-file" accept=".pdf" hidden />
+          <div class="upload-icon">📄</div>
+          <p class="upload-title">Drop your PDF resume here</p>
+          <p class="upload-sub">or click to browse files</p>
+          <div class="file-name" id="file-name">No file selected</div>
+        </div>
+
+        <div class="role-select-group">
+          <label class="form-label">Target Job Role</label>
+          <div class="role-chips" id="role-chips">
+            <button class="chip active" data-role="Software Engineer">Software Engineer</button>
+            <button class="chip" data-role="Data Scientist">Data Scientist</button>
+            <button class="chip" data-role="Frontend Developer">Frontend Developer</button>
+            <button class="chip" data-role="DevOps Engineer">DevOps Engineer</button>
+            <button class="chip" data-role="Full Stack Developer">Full Stack Developer</button>
+            <button class="chip" data-role="ML Engineer">ML Engineer</button>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="analyze-btn">
+            <span class="btn-icon">⚡</span> Analyze Resume
+          </button>
+          <button class="btn btn-ghost" id="demo-btn">
+            <span class="btn-icon">🎯</span> Try Demo
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-card glass" id="loading-section" style="display:none;">
+        <div class="loader-ring"></div>
+        <p class="loading-text">Analyzing your resume...</p>
+        <div class="loading-steps" id="loading-steps">
+          <div class="load-step active">📄 Extracting text</div>
+          <div class="load-step">🔍 Identifying skills</div>
+          <div class="load-step">🎯 Matching to role</div>
+          <div class="load-step">💡 Generating insights</div>
+        </div>
+      </div>
+
+      <!-- Results Dashboard -->
+      <div id="results-section" style="display:none;">
+
+        <!-- Score Card -->
+        <div class="score-hero glass card">
+          <div class="score-left">
+            <div class="score-label">Match Score</div>
+            <div class="score-display">
+              <span class="score-number" id="score-number">0</span>
+              <span class="score-unit">/ 100</span>
+            </div>
+            <div class="score-role" id="score-role-label">Software Engineer</div>
+          </div>
+          <div class="score-right">
+            <div class="score-ring-wrap">
+              <svg class="score-ring" viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="50" />
+                <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="50"
+                  stroke-dasharray="314"
+                  stroke-dashoffset="314" />
+              </svg>
+              <div class="ring-label" id="ring-label">–</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card glass">
+            <div class="stat-icon">🛠️</div>
+            <div class="stat-value" id="stat-skills">0</div>
+            <div class="stat-label">Skills Found</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-icon">❌</div>
+            <div class="stat-value" id="stat-missing">0</div>
+            <div class="stat-label">Missing Critical</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-icon">💬</div>
+            <div class="stat-value" id="stat-questions">0</div>
+            <div class="stat-label">Questions Ready</div>
+          </div>
+        </div>
+
+        <!-- Skills Grid -->
+        <div class="card glass">
+          <div class="card-header">
+            <h2>Skills Detected</h2>
+            <div class="badge badge-success" id="skills-count-badge">0 Skills</div>
+          </div>
+          <div class="skills-grid" id="skills-grid"></div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="card glass">
+          <div class="card-header">
+            <h2>AI Recommendations</h2>
+          </div>
+          <div class="suggestions-list" id="suggestions-list"></div>
+        </div>
+
+        <!-- CTA to Interview -->
+        <div class="cta-card glass">
+          <div class="cta-text">
+            <h3>Ready to Practice?</h3>
+            <p>Your personalized interview questions are ready based on your resume analysis.</p>
+          </div>
+          <button class="btn btn-primary btn-lg" id="go-interview-btn">
+            Start Interview Simulator →
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════ INTERVIEW PANEL ═══════ -->
+    <section id="panel-interview" class="panel">
+
+      <!-- Interview Intro -->
+      <div id="interview-intro">
+        <div class="hero-section">
+          <div class="hero-tag">✦ AI Interview Coach</div>
+          <h1 class="hero-title">Practice. Improve.<br /><span class="gradient-text">Land the Job.</span></h1>
+          <p class="hero-subtitle">Answer AI-generated questions based on your resume. Get instant feedback, scoring, and coaching after each response.</p>
+        </div>
+
+        <div class="card glass" style="text-align:center; padding: 2.5rem;">
+          <div style="font-size:4rem; margin-bottom:1rem;">🎤</div>
+          <h2 style="margin-bottom:0.5rem;">Interview Simulator</h2>
+          <p style="color:var(--text-muted); margin-bottom:1.5rem;">Analyze your resume first for personalized questions, or start with general interview questions.</p>
+          <div class="btn-group" style="justify-content:center;">
+            <button class="btn btn-primary" id="start-interview-btn">Start Interview</button>
+            <button class="btn btn-ghost" id="go-analyzer-btn">← Analyze Resume First</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interview Session -->
+      <div id="interview-session" style="display:none;">
+
+        <!-- Progress Bar -->
+        <div class="interview-progress glass card">
+          <div class="progress-info">
+            <span class="progress-label">Question <span id="q-current">1</span> of <span id="q-total">8</span></span>
+            <span class="progress-type" id="q-type-badge">Behavioral</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <div class="timer-display">
+            <span class="timer-icon">⏱</span>
+            <span id="timer-display">2:00</span>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card glass card">
+          <div class="question-number">Q<span id="q-num">1</span></div>
+          <p class="question-text" id="question-text">Loading question...</p>
+        </div>
+
+        <!-- Answer Area -->
+        <div class="card glass answer-section">
+          <label class="form-label">Your Answer</label>
+          <textarea id="answer-textarea"
+            placeholder="Type your answer here. Use the STAR method for behavioral questions: Situation → Task → Action → Result..."
+            rows="7"></textarea>
+          <div class="answer-meta">
+            <span class="word-count" id="word-count">0 words</span>
+            <span class="word-hint">Aim for 80–150 words</span>
+          </div>
+          <button class="btn btn-primary btn-block" id="submit-answer-btn">
+            Submit Answer →
+          </button>
+        </div>
+
+        <!-- Feedback Card -->
+        <div class="feedback-card glass card" id="feedback-card" style="display:none;">
+          <div class="feedback-header">
+            <div class="feedback-score-wrap">
+              <div class="feedback-score" id="feedback-score">0</div>
+              <div class="feedback-grade" id="feedback-grade">F</div>
+            </div>
+            <div class="feedback-summary">
+              <h3 id="feedback-title">Feedback</h3>
+              <p id="feedback-text">...</p>
+            </div>
+          </div>
+          <div class="feedback-columns">
+            <div class="feedback-col strengths">
+              <h4>✅ Strengths</h4>
+              <ul id="feedback-strengths"></ul>
+            </div>
+            <div class="feedback-col improvements">
+              <h4>🎯 Improvements</h4>
+              <ul id="feedback-improvements"></ul>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" id="next-question-btn">Next Question →</button>
+        </div>
+
+      </div>
+
+      <!-- Interview Results -->
+      <div id="interview-results" style="display:none;">
+        <div class="results-hero glass card">
+          <div class="results-emoji" id="results-emoji">🏆</div>
+          <h2 class="results-title" id="results-overall">Outstanding</h2>
+          <div class="results-score-big" id="results-avg">0</div>
+          <p class="results-message" id="results-message">...</p>
+        </div>
+
+        <div class="scores-breakdown card glass">
+          <h3>Score Breakdown</h3>
+          <div class="score-bars" id="score-bars"></div>
+        </div>
+
+        <div class="btn-group" style="justify-content:center; margin-top:2rem;">
+          <button class="btn btn-primary" id="retry-btn">Try Again</button>
+          <button class="btn btn-ghost" id="back-analyzer-btn">← Back to Analyzer</button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="/static/js/background3d.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
 
