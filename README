@@ -4,17 +4,17 @@ A full-stack AI-powered web application that analyzes resumes and simulates job 
 
 ## 🚀 Live Demo
 
-https://ai-resume-interview-app.onrender.com/
+🔗 [Try ResumeAI Live](https://ai-resume-interview-app.onrender.com/)
 
 ## ✨ Features
 
-* Resume PDF upload
-* Resume analysis
-* Skill extraction
-* Job role matching
-* Interview simulation
-* Instant feedback
-* Responsive user interface
+* Resume PDF Upload
+* Resume Analysis
+* Skill Extraction
+* Job Role Matching
+* Interview Simulation
+* Instant Feedback
+* Responsive User Interface
 
 ## 🛠️ Technologies Used
 
@@ -43,7 +43,14 @@ resume-ai-app/
 ├── Procfile
 ├── README.md
 ├── templates/
+│   └── index.html
 ├── static/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── app.js
+│   │   └── background3d.js
+│   └── 3d/
 └── uploads/
 ```
 
